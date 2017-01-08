@@ -2,7 +2,7 @@
 public class RecursiveIntTupleGenerator {
 
 	private int x;
-	private RecursiveIntTupleGenerator v;
+	private RecursiveIntTupleGenerator subTuple;
 	private int dimensions;
 	private int savedX;
 	
@@ -17,7 +17,32 @@ public class RecursiveIntTupleGenerator {
 			
 			x = 0;
 			dimensions = numOfDimensions;
-			v = new RecursiveIntTupleGenerator(numOfDimensions -1);
+			subTuple = new RecursiveIntTupleGenerator(numOfDimensions -1);
+			
+		}
+		
+	}
+	
+	public void next() {
+		
+		if (dimensions == 1) {
+			
+			x += 1;
+						
+		} else {
+			
+			if (x > 0) {
+				
+				x -= 1;
+				subTuple.next();
+				
+			} else {
+				
+				savedX += 1;
+				x = savedX;
+				subTuple.setZero();
+				
+			}
 			
 		}
 		
@@ -29,63 +54,14 @@ public class RecursiveIntTupleGenerator {
 		
 	}
 	
-	public void next() {
-		
-		if (v != null) {
-			
-			if (x > 0) {
-				
-				x -= 1;
-				v.next();
-				
-			} else {
-				
-				savedX += 1;
-				x = savedX;
-				v.setZero();
-				
-			}
-			
-		} else {
-			
-			x += 1;
-			
-		}
-		
-	}
-	
-	public void prev() {}
-	
-	private boolean canDec() { 
-
-		if (x > 0) {
-			
-			return true;
-			
-		} else {
-			
-			if (v != null) {
-				
-				return v.canDec();
-				
-			} else {
-				
-				return false;
-				
-			}
-			
-		}
-		
-	}
-	
 	public void setZero() {
 		
 		x = 0;
 		savedX = 0;
 		
-		if (v != null) {
+		if (subTuple != null) {
 			
-			v.setZero();
+			subTuple.setZero();
 			
 		}
 		
@@ -101,7 +77,7 @@ public class RecursiveIntTupleGenerator {
 				
 			} else {
 				
-				return v.getVal(index - 1);
+				return subTuple.getVal(index - 1);
 				
 			}
 			
@@ -113,9 +89,9 @@ public class RecursiveIntTupleGenerator {
 	
 	public int[] toIntArray() { 
 
-		if (v != null) {
+		if (subTuple != null) {
 			
-			return concatenate(new int[] {x}, v.toIntArray());
+			return concatenate(new int[] {x}, subTuple.toIntArray());
 			
 		} else {
 			
@@ -137,9 +113,9 @@ public class RecursiveIntTupleGenerator {
 	
 	public String toString() { 
 
-		if (v != null) {
+		if (subTuple != null) {
 			
-			return Integer.toString(x) + ", " + v.toString();
+			return Integer.toString(x) + ", " + subTuple.toString();
 			
 		} else {
 			
@@ -151,13 +127,13 @@ public class RecursiveIntTupleGenerator {
 	
 	public String toLaTeX() { 
 
-		if (v != null) {
+		if (subTuple != null) {
 			
-			return Integer.toString(x) + " & " + v.toString();
+			return Integer.toString(x) + "^{2} + " + subTuple.toLaTeX();
 			
 		} else {
 			
-			return Integer.toString(x);
+			return Integer.toString(x) + "^{2}";
 			
 		}
 		
